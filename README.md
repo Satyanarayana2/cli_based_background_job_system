@@ -56,7 +56,7 @@ queuectl/
 *Installation*
 
 # Clone the repository
-git clone https://github.com/<your-username>/QueueCTL.git
+[git clone https://github.com/<your-username>/QueueCTL.git](https://github.com/Satyanarayana2/cli_based_background_job_system/)
 cd QueueCTL
 
 # Install dependencies
