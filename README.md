@@ -59,151 +59,59 @@ queuectl/
 [git clone https://github.com/<your-username>/QueueCTL.git](https://github.com/Satyanarayana2/cli_based_background_job_system/)
 cd QueueCTL
 
-# Install dependencies
-pip install -r requirements.txt
+# QueueCTL – Job Queue Management CLI
 
-# Run CLI commands
-python -m queuectl --help
+QueueCTL is a lightweight, file-based job queue system with support for background execution, retries, dead-letter queue (DLQ), and worker management.
 
-*CLI Commands*
+---
 
-QueueCTL supports 11 CLI commands, grouped by category:
+## CLI Commands
 
-#
+QueueCTL supports **11 commands**, organized by category:
 
-Category
+| # | Category       | Command                                             | Description                                |
+|---|----------------|-----------------------------------------------------|--------------------------------------------|
+| 1 | **Enqueue**    | `queuectl enqueue '{"id":"job1","command":"sleep 2"}'` | Add a new background job                   |
+| 2 |                | `queuectl enqueue --file scripts/task.py`           | Enqueue a job from a Python/Bash file      |
+| 3 | **Workers**    | `queuectl worker start --count 3`                   | Start one or more worker processes         |
+| 4 |                | `queuectl worker stop`                              | Stop all running workers gracefully        |
+| 5 | **Status**     | `queuectl status`                                   | Display summary of job states & workers    |
+| 6 | **List Jobs**  | `queuectl list --state pending`                     | List jobs filtered by state                |
+| 7 | **DLQ**        | `queuectl dlq list`                                 | View jobs in the Dead Letter Queue         |
+| 8 |                | `queuectl dlq retry <job_id>`                       | Retry a failed DLQ job                     |
+| 9 | **Config**     | `queuectl config set max_retries 3`                 | Update configuration values                |
+|10 |                | `queuectl config show`                              | Display all configuration settings         |
+|11 | **Metrics**    | `queuectl metrics`                                  | Show real-time system and worker stats     |
 
-Command
+---
 
-Description
+## Job Lifecycle
 
-1
+| State        | Description                                      |
+|--------------|--------------------------------------------------|
+| `pending`    | Waiting to be picked up by a worker              |
+| `processing` | Currently being executed                         |
+| `completed`  | Successfully executed                            |
+| `failed`     | Failed but retryable                             |
+| `dead`       | Permanently failed (moved to DLQ)                |
 
-Enqueue
+---
 
-queuectl enqueue '{"id":"job1","command":"sleep 2"}'
+## Retry & Backoff Mechanism
 
-Add a new background job
+Failed jobs are **automatically retried** with **exponential backoff**.
 
-2
+### Example: `backoff_base = 2`, `max_retries = 3`
 
+| Attempt | Delay Before Retry |
+|---------|--------------------|
+| 1st     | 2 seconds          |
+| 2nd     | 4 seconds          |
+| 3rd     | 8 seconds          |
 
+> After exceeding `max_retries`, the job is moved to the **Dead Letter Queue (DLQ)**.
 
-queuectl enqueue --file scripts/task.py
 
-Enqueue a job from a Python/Bash file
-
-3
-
-Workers
-
-queuectl worker start --count 3
-
-Start one or more worker processes
-
-4
-
-
-
-queuectl worker stop
-
-Stop all running workers gracefully
-
-5
-
-Status
-
-queuectl status
-
-Display summary of job states & workers
-
-6
-
-List Jobs
-
-queuectl list --state pending
-
-List jobs filtered by state
-
-7
-
-DLQ
-
-queuectl dlq list
-
-View jobs in the Dead Letter Queue
-
-8
-
-
-
-queuectl dlq retry <job_id>
-
-Retry a failed DLQ job
-
-9
-
-Config
-
-queuectl config set max_retries 3
-
-Update configuration values
-
-10
-
-
-
-queuectl config show
-
-Display all configuration settings
-
-11
-
-Metrics
-
-queuectl metrics
-
-Show real-time system and worker stats
-
-*Job Lifecycle*
-
-State
-
-Description
-
-pending
-
-Waiting to be picked up by a worker
-
-processing
-
-Currently being executed
-
-completed
-
-Successfully executed
-
-failed
-
-Failed but retryable
-
-dead
-
-Permanently failed (moved to DLQ)
-
-*Retry & Backoff Mechanism*
-
-Failed jobs are retried automatically with exponential backoff:
-
-
-
-For example, with backoff_base = 2 and max_retries = 3:
-
-1st retry → 2s delay
-2nd retry → 4s delay
-3rd retry → 8s delay
-
-After exceeding max_retries, jobs move automatically to the Dead Letter Queue.
 
 *Configuration*
 
