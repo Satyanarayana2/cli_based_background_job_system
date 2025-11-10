@@ -31,6 +31,7 @@ CLI Framework: click
 
 *Project Structure*
 
+```
 queuectl/
 │
 ├── queuectl/
@@ -52,6 +53,8 @@ queuectl/
 │   └── metrics.json       # Real-time system stats
 │
 └── README.md
+```
+
 
 *Installation*
 
